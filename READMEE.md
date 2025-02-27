@@ -223,3 +223,77 @@ Multiple teams are working in parallel.
 ❌ Avoid Microservices when:
 
 The application is small and a monolithic approach is easier to maintain.
+
+....................................................RabbitMQ............................................
+
+
+1️⃣ Introduction (What is RabbitMQ?)
+"RabbitMQ is a message broker that helps different applications communicate asynchronously.
+It follows the publish-subscribe model and supports message queues to ensure reliable delivery of messages."
+
+✅ Message Broker – Acts as a middleman between sender and receiver.
+✅ Asynchronous Communication – Services don’t need to wait for responses.
+✅ Reliable Messaging – Ensures messages are not lost.
+✅ Supports Multiple Protocols – Works with AMQP, MQTT, STOMP, etc.
+
+2️⃣ Why Use RabbitMQ? (Benefits)
+"RabbitMQ is useful for handling high-throughput messaging between microservices."
+
+✅ Decoupling Services – Sender and receiver work independently.
+✅ Load Balancing – Messages are distributed across multiple consumers.
+✅ Fault Tolerance – Messages are stored until processed, avoiding data loss.
+✅ Scalability – Supports multiple queues and horizontal scaling.
+
+3️⃣ RabbitMQ Architecture (How It Works?)
+1️⃣ Producer – Sends messages to RabbitMQ.
+2️⃣ Exchange – Routes messages based on rules.
+3️⃣ Queue – Stores messages until a consumer processes them.
+4️⃣ Consumer – Listens to the queue and processes messages.
+
+📌 Types of Exchanges in RabbitMQ:
+
+Direct Exchange – Sends messages to a specific queue.
+Fanout Exchange – Broadcasts messages to all queues.
+Topic Exchange – Routes messages based on patterns (e.g., logs.info, logs.error).
+4️⃣ RabbitMQ Example (Golang)
+
+📌 Producer – Sending a Message
+go
+Copy
+Edit
+conn, _ := amqp.Dial("amqp://guest:guest@localhost:5672/")
+ch, _ := conn.Channel()
+q, _ := ch.QueueDeclare("task_queue", false, false, false, false, nil)
+ch.Publish("", q.Name, false, false, amqp.Publishing{
+    ContentType: "text/plain",
+    Body:        []byte("Hello from Producer!"),
+})
+📌 Consumer – Receiving a Message
+go
+
+
+
+conn, _ := amqp.Dial("amqp://guest:guest@localhost:5672/")
+ch, _ := conn.Channel()
+q, _ := ch.QueueDeclare("task_queue", false, false, false, false, nil)
+msgs, _ := ch.Consume(q.Name, "", true, false, false, false, nil)
+
+for msg := range msgs {
+    fmt.Println("Received Message:", string(msg.Body))
+}
+
+5️⃣ Real-World Use Case
+"In my current project, we use RabbitMQ for asynchronous task processing.
+For example, when a user places an order, the order service publishes a message to RabbitMQ.
+The payment service consumes the message, processes the payment, and updates the database."
+
+6️⃣ When to Use RabbitMQ?
+✅ Use RabbitMQ when:
+
+You need asynchronous processing (e.g., sending emails, background jobs).
+Your system has multiple services that need to communicate.
+You need load balancing across multiple consumers.
+❌ Avoid RabbitMQ when:
+
+You need real-time communication (use WebSockets or gRPC Streaming instead).
+Your system is simple and doesn’t require a message broker.
