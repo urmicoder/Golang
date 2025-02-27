@@ -258,9 +258,7 @@ Topic Exchange – Routes messages based on patterns (e.g., logs.info, logs.erro
 4️⃣ RabbitMQ Example (Golang)
 
 📌 Producer – Sending a Message
-go
-Copy
-Edit
+
 conn, _ := amqp.Dial("amqp://guest:guest@localhost:5672/")
 ch, _ := conn.Channel()
 q, _ := ch.QueueDeclare("task_queue", false, false, false, false, nil)
@@ -268,10 +266,10 @@ ch.Publish("", q.Name, false, false, amqp.Publishing{
     ContentType: "text/plain",
     Body:        []byte("Hello from Producer!"),
 })
+
+
+
 📌 Consumer – Receiving a Message
-go
-
-
 
 conn, _ := amqp.Dial("amqp://guest:guest@localhost:5672/")
 ch, _ := conn.Channel()
@@ -281,6 +279,7 @@ msgs, _ := ch.Consume(q.Name, "", true, false, false, false, nil)
 for msg := range msgs {
     fmt.Println("Received Message:", string(msg.Body))
 }
+
 
 5️⃣ Real-World Use Case
 "In my current project, we use RabbitMQ for asynchronous task processing.
