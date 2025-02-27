@@ -73,6 +73,7 @@ If everything works fine, Jenkins creates a Docker image and deploys it to a Kub
 
 ............................................gRPC....................................................................
 
+
 1️⃣ Introduction (What is gRPC?)
 "gRPC is a high-performance Remote Procedure Call (RPC) framework developed by Google.
 
@@ -97,10 +98,10 @@ gRPC is mainly used for communication between microservices because it is fast, 
 4️⃣ Bidirectional Streaming – Both client and server continuously exchange data (best for real-time apps).
 
 4️⃣ gRPC Implementation Example (Golang)
-📌 Step 1: Define Proto File
+
+ Step 1: Define Proto File
 proto
-Copy
-Edit
+
 syntax = "proto3";
 
 service UserService {
@@ -115,15 +116,12 @@ message UserResponse {
     string name = 1;
     int32 age = 2;
 }
-📌 Step 2: Generate gRPC Code
-sh
-Copy
-Edit
+
+Step 2: Generate gRPC Code
+
 protoc --go_out=. --go-grpc_out=. user.proto
-📌 Step 3: Implement gRPC Server
-go
-Copy
-Edit
+
+Step 3: Implement gRPC Server
 type UserServiceServer struct{}
 
 func (s *UserServiceServer) GetUser(ctx context.Context, req *pb.UserRequest) (*pb.UserResponse, error) {
@@ -136,10 +134,9 @@ func main() {
     pb.RegisterUserServiceServer(grpcServer, &UserServiceServer{})
     grpcServer.Serve(lis)
 }
-📌 Step 4: Implement gRPC Client
-go
-Copy
-Edit
+
+Step 4: Implement gRPC Client
+
 func main() {
     conn, _ := grpc.Dial("localhost:50051", grpc.WithInsecure())
     defer conn.Close()
@@ -159,6 +156,7 @@ Switching to gRPC improved performance and enabled real-time streaming."
 ✅ Use REST – Public APIs, web applications, browser-based systems (because gRPC is not natively supported in browsers).
 
 ............................................Microservices....................................................................
+
 1️⃣ Introduction (What is Microservices?)
 "Microservices is an architectural style where an application is divided into multiple small, independent services.
 Each service has a specific function and can be deployed separately.
@@ -181,10 +179,9 @@ These services communicate using lightweight APIs like gRPC, REST, or GraphQL."
 5️⃣ Monitoring & Logging – Uses distributed tracing (Jaeger, Prometheus, ELK).
 
 4️⃣ Microservices Example (Golang)
-📌 User Service (gRPC-based microservice)
+
+User Service (gRPC-based microservice)
 proto
-Copy
-Edit
 syntax = "proto3";
 
 service UserService {
@@ -199,14 +196,14 @@ message UserResponse {
     string name = 1;
     int32 age = 2;
 }
-📌 Order Service (REST-based microservice)
-go
-Copy
-Edit
+
+Order Service (REST-based microservice)
+
 func GetOrders(w http.ResponseWriter, r *http.Request) {
     orders := []Order{{ID: "1", UserID: "123", Amount: 250}}
     json.NewEncoder(w).Encode(orders)
 }
+
 📌 User Service → Uses gRPC for communication
 📌 Order Service → Uses REST API
 📌 Both services communicate through an API Gateway
