@@ -1,0 +1,198 @@
+pc@hp:~/P/Golang/grpc/domain$ pwd
+/home/pc/P/Golang/grpc/domain
+pc@hp:~/P/Golang/grpc/domain$ ls
+hello.proto
+pc@hp:~/P/Golang/grpc/domain$ ls -al
+total 12
+drwxrwxr-x 2 pc pc 4096 Feb 27 22:57 .
+drwxrwxr-x 3 pc pc 4096 Feb 27 22:57 ..
+-rw-rw-r-- 1 pc pc  307 Feb 27 23:08 hello.proto
+pc@hp:~/P/Golang/grpc/domain$ 
+pc@hp:~/P/Golang/grpc/domain$ docker ps -a
+CONTAINER ID   IMAGE                                 COMMAND                  CREATED       STATUS                     PORTS     NAMES
+7852090249c1   gcr.io/k8s-minikube/kicbase:v0.0.45   "/usr/local/bin/entr…"   6 weeks ago   Exited (137) 6 weeks ago             minikube
+7494834aaac1   ubuntu:20.04                          "/bin/bash"              8 weeks ago   Exited (0) 3 weeks ago               interview
+pc@hp:~/P/Golang/grpc/domain$ docker volume ls
+DRIVER    VOLUME NAME
+local     minikube
+pc@hp:~/P/Golang/grpc/domain$ docker network ls
+NETWORK ID     NAME       DRIVER    SCOPE
+b0be4455547d   bridge     bridge    local
+6c0c3d660966   host       host      local
+403289c2e3fe   minikube   bridge    local
+dfe4bf7e7d2a   none       null      local
+pc@hp:~/P/Golang/grpc/domain$ 
+
+
+
+
+pc@hp:~/P/Golang/grpc/domain$ docker ps -a
+CONTAINER ID   IMAGE                                 COMMAND                  CREATED       STATUS                     PORTS     NAMES
+7852090249c1   gcr.io/k8s-minikube/kicbase:v0.0.45   "/usr/local/bin/entr…"   6 weeks ago   Exited (137) 6 weeks ago             minikube
+7494834aaac1   ubuntu:20.04                          "/bin/bash"              8 weeks ago   Exited (0) 3 weeks ago               interview
+pc@hp:~/P/Golang/grpc/domain$ docker run -it golang:1.24.0
+Unable to find image 'golang:1.24.0' locally
+docker: Error response from daemon: Get "https://registry-1.docker.io/v2/": read tcp 192.168.0.105:34724->3.94.224.37:443: read: connection reset by peer.
+See 'docker run --help'.
+pc@hp:~/P/Golang/grpc/domain$ docker run -it golang:1.24.0
+Unable to find image 'golang:1.24.0' locally
+1.24.0: Pulling from library/golang
+155ad54a8b28: Downloading  14.29MB/48.48MB
+8031108f3cda: Download complete 
+1d281e50d3e4: Downloading  24.23MB/64.39MB
+9760da4e8f07: Downloading  22.09MB/92.33MB                                                        155ad54a8b28: Pull complete 
+8031108f3cda: Pull complete 
+1d281e50d3e4: Pull complete 
+9760da4e8f07: Pull complete 
+a2a60326dddc: Pull complete 
+8985a99e1ce3: Pull complete 
+4f4fb700ef54: Pull complete 
+Digest: sha256:cd0c949a4709ef70a8dad14274f09bd07b25542de5a1c4812f217087737efd17
+Status: Downloaded newer image for golang:1.24.0
+root@22ca208133a5:/go# pwd
+/go
+root@22ca208133a5:/go# exit
+exit
+pc@hp:~/P/Golang/grpc/domain$ docker ps -a
+CONTAINER ID   IMAGE                                 COMMAND                  CREATED              STATUS                      PORTS     NAMES
+22ca208133a5   golang:1.24.0                         "bash"                   About a minute ago   Exited (0) 12 seconds ago             festive_mcnulty
+7852090249c1   gcr.io/k8s-minikube/kicbase:v0.0.45   "/usr/local/bin/entr…"   6 weeks ago          Exited (137) 6 weeks ago              minikube
+7494834aaac1   ubuntu:20.04                          "/bin/bash"              8 weeks ago          Exited (0) 3 weeks ago                interview
+pc@hp:~/P/Golang/grpc/domain$ docker rm^C
+pc@hp:~/P/Golang/grpc/domain$ docker rm 22ca208133a5
+22ca208133a5
+pc@hp:~/P/Golang/grpc/domain$ docker run -it golang:1.24.0 /bin/bash
+root@f775289a42ab:/go# pwd
+/go
+root@f775289a42ab:/go# apt update
+Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8792 kB]
+Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [13.5 kB]                
+Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [246 kB]       
+Fetched 9306 kB in 9s (1080 kB/s)                                                                
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+All packages are up to date.
+root@f775289a42ab:/go# apt install protobuf-compiler
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  libprotobuf-dev libprotobuf-lite32 libprotobuf32 libprotoc32 zlib1g-dev
+Suggested packages:
+  protobuf-mode-el
+The following NEW packages will be installed:
+  libprotobuf-dev libprotobuf-lite32 libprotobuf32 libprotoc32 protobuf-compiler zlib1g-dev
+0 upgraded, 6 newly installed, 0 to remove and 0 not upgraded.
+Need to get 4306 kB of archives.
+After this operation, 21.0 MB of additional disk space will be used.
+Do you want to continue? [Y/n] y
+Get:1 http://deb.debian.org/debian bookworm/main amd64 zlib1g-dev amd64 1:1.2.13.dfsg-1 [916 kB]
+Get:2 http://deb.debian.org/debian bookworm/main amd64 libprotobuf32 amd64 3.21.12-3 [932 kB]
+Get:3 http://deb.debian.org/debian bookworm/main amd64 libprotobuf-lite32 amd64 3.21.12-3 [261 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 libprotobuf-dev amd64 3.21.12-3 [1283 kB]
+Get:5 http://deb.debian.org/debian bookworm/main amd64 libprotoc32 amd64 3.21.12-3 [829 kB]
+Get:6 http://deb.debian.org/debian bookworm/main amd64 protobuf-compiler amd64 3.21.12-3 [83.9 kB]
+Fetched 4306 kB in 7s (638 kB/s)                                                                 
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package zlib1g-dev:amd64.
+(Reading database ... 15612 files and directories currently installed.)
+Preparing to unpack .../0-zlib1g-dev_1%3a1.2.13.dfsg-1_amd64.deb ...
+Unpacking zlib1g-dev:amd64 (1:1.2.13.dfsg-1) ...
+Selecting previously unselected package libprotobuf32:amd64.
+Preparing to unpack .../1-libprotobuf32_3.21.12-3_amd64.deb ...
+Unpacking libprotobuf32:amd64 (3.21.12-3) ...
+Selecting previously unselected package libprotobuf-lite32:amd64.
+Preparing to unpack .../2-libprotobuf-lite32_3.21.12-3_amd64.deb ...
+Unpacking libprotobuf-lite32:amd64 (3.21.12-3) ...
+Selecting previously unselected package libprotobuf-dev:amd64.
+Preparing to unpack .../3-libprotobuf-dev_3.21.12-3_amd64.deb ...
+Unpacking libprotobuf-dev:amd64 (3.21.12-3) ...
+Selecting previously unselected package libprotoc32:amd64.
+Preparing to unpack .../4-libprotoc32_3.21.12-3_amd64.deb ...
+Unpacking libprotoc32:amd64 (3.21.12-3) ...
+Selecting previously unselected package protobuf-compiler.
+Preparing to unpack .../5-protobuf-compiler_3.21.12-3_amd64.deb ...
+Unpacking protobuf-compiler (3.21.12-3) ...
+Setting up zlib1g-dev:amd64 (1:1.2.13.dfsg-1) ...
+Setting up libprotobuf32:amd64 (3.21.12-3) ...
+Setting up libprotobuf-lite32:amd64 (3.21.12-3) ...
+Setting up libprotoc32:amd64 (3.21.12-3) ...
+Setting up protobuf-compiler (3.21.12-3) ...
+Setting up libprotobuf-dev:amd64 (3.21.12-3) ...
+Processing triggers for libc-bin (2.36-9+deb12u9) ...
+root@f775289a42ab:/go# go version
+go version go1.24.0 linux/amd64
+root@f775289a42ab:/go# go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+go: downloading google.golang.org/protobuf v1.36.5
+root@f775289a42ab:/go# go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+go: downloading google.golang.org/grpc v1.70.0
+go: downloading google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1
+go: downloading google.golang.org/protobuf v1.34.1
+root@f775289a42ab:/go# ls
+bin  hello.proto  pkg  src
+root@f775289a42ab:/go# pwd
+/go
+root@f775289a42ab:/go# protoc --proto_path=/go --go_out=/go --go-grpc_out=/go /go/hello.proto
+hello.proto:17:29: Expected "returns".
+hello.proto:18:36: Expected "returns".
+root@f775289a42ab:/go# pro
+protoc              protoc-gen-go       protoc-gen-go-grpc  prove
+root@f775289a42ab:/go# rm -rf hello.proto 
+root@f775289a42ab:/go# ls
+bin  hello.proto  pkg  src
+root@f775289a42ab:/go# protoc --proto_path=/go --go_out=/go --go-grpc_out=/go /go/hello.proto
+hello.proto:9:5: "int" is not defined.
+root@f775289a42ab:/go# rm -rf hello.proto 
+root@f775289a42ab:/go# ls
+bin  hello.proto  pkg  src
+root@f775289a42ab:/go# protoc --proto_path=/go --go_out=/go --go-grpc_out=/go /go/hello.proto
+hello.proto:9:5: "integer" is not defined.
+root@f775289a42ab:/go# nano hello.proto 
+bash: nano: command not found
+root@f775289a42ab:/go# rm -rf hello.proto 
+root@f775289a42ab:/go# ls
+bin  hello.proto  pkg  src
+root@f775289a42ab:/go# protoc --proto_path=/go --go_out=/go --go-grpc_out=/go /go/hello.proto
+root@f775289a42ab:/go# ls
+bin  gogen  hello.proto  pkg  src
+root@f775289a42ab:/go# cd gogen/
+root@f775289a42ab:/go/gogen# ls
+hello.pb.go  hello_grpc.pb.go
+root@f775289a42ab:/go/gogen# cat hello.pb.go 
+// Code generated by protoc-gen-go. DO NOT EDIT.
+
+
+
+
+
+
+
+
+
+--------------------------------------------------
+-----------------------------------------------------------
+--------------------------------------------------------------
+
+
+
+
+
+
+
+
+pc@hp:~/P/Golang/grpc/domain$ ls
+hello.proto
+pc@hp:~/P/Golang/grpc/domain$ docker cp hello.proto f775289a42ab:/go/
+pc@hp:~/P/Golang/grpc/domain$ protoc --proto_path=/go --go_out=/go --go-grpc_out=/go /pc@hp:~/P/Golang/grpc/domain$ protoc --proto_path=/go --go_out=/go --go-grpc_out=/go /go/hello.proto^C
+pc@hp:~/P/Golang/grpc/domain$ docker cp hello.proto f775289a42ab:/go/
+Successfully copied 2.05kB to f775289a42ab:/go/
+pc@hp:~/P/Golang/grpc/domain$ docker cp hello.proto f775289a42ab:/go/
+Successfully copied 2.05kB to f775289a42ab:/go/
+pc@hp:~/P/Golang/grpc/domain$ docker cp hello.proto f775289a42ab:/go/
+pc@hp:~/P/Golang/grpc/domain$ docker cp f775289a42ab:/go/gogen/ .
+Successfully copied 15.4kB to /home/pc/P/Golang/grpc/domain/.
+pc@hp:~/P/Golang/grpc/domain$ 
