@@ -1,0 +1,352 @@
+docker run -it --network=host golang:1.24.0 /bin/bash
+
+Check IP of the container via Container ID 
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 0599b542b08c
+
+nameserver 172.17.0.2 add this line to sudo nano /etc/resolv.conf
+
+echo "172.17.0.2 rabbitmq" | sudo tee -a /etc/hosts
+
+pc@hp:~$ docker ps -a
+CONTAINER ID   IMAGE                                 COMMAND                  CREATED        STATUS                     PORTS     NAMES
+f775289a42ab   golang:1.24.0                         "/bin/bash"              42 hours ago   Exited (0) 41 hours ago              naughty_engelbart
+7852090249c1   gcr.io/k8s-minikube/kicbase:v0.0.45   "/usr/local/bin/entr…"   6 weeks ago    Exited (137) 6 weeks ago             minikube
+7494834aaac1   ubuntu:20.04                          "/bin/bash"              2 months ago   Exited (0) 3 weeks ago               interview
+pc@hp:~$ docker run -d --name rabbitmq \
+  -p 5672:5672 -p 15672:15672 \
+  -e RABBITMQ_DEFAULT_USER=guest \
+  -e RABBITMQ_DEFAULT_PASS=guest \
+  rabbitmq:3-management
+Unable to find image 'rabbitmq:3-management' locally
+3-management: Pulling from library/rabbitmq
+5a7813e071bf: Pull complete 
+105e77882e2b: Pull complete 
+e9e0835995fa: Pull complete 
+944ecc94bb34: Pull complete 
+52797677fdca: Pull complete 
+d5be0a255770: Pull complete 
+af1c91018c15: Pull complete 
+8f6bf0e6cf34: Pull complete 
+ddb70b5d45fa: Pull complete 
+3f4965bf9ec8: Pull complete 
+Digest: sha256:20aed6473416fa16a7e42dcc592aa5a1aa96a067fcab1b2f0251080b583208d6
+Status: Downloaded newer image for rabbitmq:3-management
+0599b542b08ce264053924ca4e4391adefbb6d90715bedcf3798ad676a116354
+pc@hp:~$ docker ps -a
+CONTAINER ID   IMAGE                                 COMMAND                  CREATED          STATUS                     PORTS                                                                                                                                                 NAMES
+0599b542b08c   rabbitmq:3-management                 "docker-entrypoint.s…"   44 seconds ago   Up 43 seconds              4369/tcp, 5671/tcp, 0.0.0.0:5672->5672/tcp, :::5672->5672/tcp, 15671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp, :::15672->15672/tcp   rabbitmq
+f775289a42ab   golang:1.24.0                         "/bin/bash"              42 hours ago     Exited (0) 42 hours ago                                                                                                                                                          naughty_engelbart
+7852090249c1   gcr.io/k8s-minikube/kicbase:v0.0.45   "/usr/local/bin/entr…"   6 weeks ago      Exited (137) 6 weeks ago                                                                                                                                                         minikube
+7494834aaac1   ubuntu:20.04                          "/bin/bash"              2 months ago     Exited (0) 3 weeks ago                                                                                                                                                           interview
+pc@hp:~$ docker run -it golang:1.24.0 /bin/bash
+root@6a3d2c7ec5ed:/go# apt update
+Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8792 kB]
+Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [13.5 kB]                                                                                           
+Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [246 kB]                                                                                  
+Fetched 9306 kB in 9s (995 kB/s)                                                                                                                                            
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+All packages are up to date.
+root@6a3d2c7ec5ed:/go# apt install nano 
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Suggested packages:
+  hunspell
+The following NEW packages will be installed:
+  nano
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 690 kB of archives.
+After this operation, 2871 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian bookworm/main amd64 nano amd64 7.2-1+deb12u1 [690 kB]
+Fetched 690 kB in 0s (1536 kB/s)
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package nano.
+(Reading database ... 15612 files and directories currently installed.)
+Preparing to unpack .../nano_7.2-1+deb12u1_amd64.deb ...
+Unpacking nano (7.2-1+deb12u1) ...
+Setting up nano (7.2-1+deb12u1) ...
+update-alternatives: using /bin/nano to provide /usr/bin/editor (editor) in auto mode
+update-alternatives: using /bin/nano to provide /usr/bin/pico (pico) in auto mode
+root@6a3d2c7ec5ed:/go# 
+
+root@6a3d2c7ec5ed:/go# ls
+bin  src
+root@6a3d2c7ec5ed:/go# nano publisher.go
+root@6a3d2c7ec5ed:/go# ls
+bin  publisher.go  src
+root@6a3d2c7ec5ed:/go# mkdir cmd
+root@6a3d2c7ec5ed:/go# mv publisher.go   
+bin/          cmd/          publisher.go  src/          
+root@6a3d2c7ec5ed:/go# mv publisher.go cmd/
+root@6a3d2c7ec5ed:/go# ls
+bin  cmd  src
+root@6a3d2c7ec5ed:/go# cd cmd/
+root@6a3d2c7ec5ed:/go/cmd# go mod init publisher
+go: creating new go.mod: module publisher
+go: to add module requirements and sums:
+	go mod tidy
+root@6a3d2c7ec5ed:/go/cmd# go mod tidy
+go: finding module for package github.com/streadway/amqp
+go: downloading github.com/streadway/amqp v1.1.0
+go: found github.com/streadway/amqp in github.com/streadway/amqp v1.1.0
+root@6a3d2c7ec5ed:/go/cmd# ls
+go.mod	go.sum	publisher.go
+root@6a3d2c7ec5ed:/go/cmd# go run publisher.go 
+^C
+root@6a3d2c7ec5ed:/go/cmd# go run publisher.go 
+2025/03/01 12:27:13 dial tcp [::1]:5672: connect: connection refused
+exit status 1
+root@6a3d2c7ec5ed:/go/cmd# ^C
+root@6a3d2c7ec5ed:/go/cmd# exit
+exit
+pc@hp:~$ docker run -it --network=host golang:1.24.0 /bin/bash
+root@hp:/go# ls
+bin  src
+root@hp:/go# apt update
+Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8792 kB]
+Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [13.5 kB]                                                                                           
+Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [246 kB]                                                                                  
+Fetched 9306 kB in 7s (1315 kB/s)                                                                                                                                           
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+All packages are up to date.
+root@hp:/go# apt install nano
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Suggested packages:
+  hunspell
+The following NEW packages will be installed:
+  nano
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 690 kB of archives.
+After this operation, 2871 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian bookworm/main amd64 nano amd64 7.2-1+deb12u1 [690 kB]
+Fetched 690 kB in 1s (969 kB/s)
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package nano.
+(Reading database ... 15612 files and directories currently installed.)
+Preparing to unpack .../nano_7.2-1+deb12u1_amd64.deb ...
+Unpacking nano (7.2-1+deb12u1) ...
+Setting up nano (7.2-1+deb12u1) ...
+update-alternatives: using /bin/nano to provide /usr/bin/editor (editor) in auto mode
+update-alternatives: using /bin/nano to provide /usr/bin/pico (pico) in auto mode
+root@hp:/go# ls
+bin  src
+root@hp:/go# mkdir cmd
+root@hp:/go# cd cmd/
+root@hp:/go/cmd# nano publisher.go
+root@hp:/go/cmd# go mod init pub
+go: creating new go.mod: module pub
+go: to add module requirements and sums:
+	go mod tidy
+root@hp:/go/cmd# go mod tidy
+go: finding module for package github.com/streadway/amqp
+go: downloading github.com/streadway/amqp v1.1.0
+go: found github.com/streadway/amqp in github.com/streadway/amqp v1.1.0
+root@hp:/go/cmd# nano publisher.go
+root@hp:/go/cmd# go run publisher.go 
+2025/03/01 12:34:44 dial tcp: lookup rabbitmq on 127.0.0.53:53: server misbehaving
+exit status 1
+root@hp:/go/cmd# go run publisher.go 
+root@hp:/go/cmd# go run publisher.go 
+root@hp:/go/cmd# go run publisher.go 
+root@hp:/go/cmd# go run publisher.go 
+root@hp:/go/cmd# go run publisher.go 
+root@hp:/go/cmd# go run publisher.go 
+root@hp:/go/cmd# nano publisher.go 
+root@hp:/go/cmd# nano publisher.go 
+root@hp:/go/cmd# go run publisher.go 
+root@hp:/go/cmd# ^C
+root@hp:/go/cmd# 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pc@hp:~$ docker run -it golang:1.24.0 /bin/bash
+root@d01953d590d8:/go# apt update
+Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8792 kB]
+Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [13.5 kB]
+Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [246 kB]
+Fetched 9306 kB in 6s (1533 kB/s)                                                                                                                                           
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+All packages are up to date.
+root@d01953d590d8:/go# apt install nano
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Suggested packages:
+  hunspell
+The following NEW packages will be installed:
+  nano
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 690 kB of archives.
+After this operation, 2871 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian bookworm/main amd64 nano amd64 7.2-1+deb12u1 [690 kB]
+Fetched 690 kB in 0s (1543 kB/s)
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package nano.
+(Reading database ... 15612 files and directories currently installed.)
+Preparing to unpack .../nano_7.2-1+deb12u1_amd64.deb ...
+Unpacking nano (7.2-1+deb12u1) ...
+Setting up nano (7.2-1+deb12u1) ...
+update-alternatives: using /bin/nano to provide /usr/bin/editor (editor) in auto mode
+update-alternatives: using /bin/nano to provide /usr/bin/pico (pico) in auto mode
+root@d01953d590d8:/go# 
+
+
+
+
+
+
+root@d01953d590d8:/go# ls
+bin  src
+root@d01953d590d8:/go# nano consumer.go
+root@d01953d590d8:/go# ls
+bin  consumer.go  src
+root@d01953d590d8:/go# ls
+bin  consumer.go  src
+root@d01953d590d8:/go# mkdir cmd
+root@d01953d590d8:/go# mv consumer.go cmd/
+root@d01953d590d8:/go# cd cmd/
+root@d01953d590d8:/go/cmd# ls
+consumer.go
+root@d01953d590d8:/go/cmd# go mod init consumer
+go: creating new go.mod: module consumer
+go: to add module requirements and sums:
+	go mod tidy
+root@d01953d590d8:/go/cmd# go mod tidy
+go: finding module for package github.com/streadway/amqp
+go: downloading github.com/streadway/amqp v1.1.0
+go: found github.com/streadway/amqp in github.com/streadway/amqp v1.1.0
+root@d01953d590d8:/go/cmd# ls
+consumer.go  go.mod  go.sum
+root@d01953d590d8:/go/cmd# go run consumer.go 
+2025/03/01 12:26:47 dial tcp [::1]:5672: connect: connection refused
+exit status 1
+root@d01953d590d8:/go/cmd# ^C
+root@d01953d590d8:/go/cmd# go run consumer.go 
+2025/03/01 12:27:01 dial tcp [::1]:5672: connect: connection refused
+exit status 1
+root@d01953d590d8:/go/cmd# go run consumer.go 
+2025/03/01 12:27:11 dial tcp [::1]:5672: connect: connection refused
+exit status 1
+root@d01953d590d8:/go/cmd# exit
+exit
+pc@hp:~$ docker run -it --network=host golang:1.24.0 /bin/bash
+root@hp:/go# apt update && apt install nano 
+Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8792 kB]
+Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [13.5 kB]                                                                                           
+Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [246 kB]                                                                                  
+Fetched 9306 kB in 12s (790 kB/s)                                                                                                                                           
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+All packages are up to date.
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Suggested packages:
+  hunspell
+The following NEW packages will be installed:
+  nano
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 690 kB of archives.
+After this operation, 2871 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian bookworm/main amd64 nano amd64 7.2-1+deb12u1 [690 kB]
+Fetched 690 kB in 0s (1631 kB/s)
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package nano.
+(Reading database ... 15612 files and directories currently installed.)
+Preparing to unpack .../nano_7.2-1+deb12u1_amd64.deb ...
+Unpacking nano (7.2-1+deb12u1) ...
+Setting up nano (7.2-1+deb12u1) ...
+update-alternatives: using /bin/nano to provide /usr/bin/editor (editor) in auto mode
+update-alternatives: using /bin/nano to provide /usr/bin/pico (pico) in auto mode
+root@hp:/go# mkdir cmd
+root@hp:/go# cd cmd/
+root@hp:/go/cmd# nano consumer.go
+root@hp:/go/cmd# go mod init cons
+go: creating new go.mod: module cons
+go: to add module requirements and sums:
+	go mod tidy
+root@hp:/go/cmd# go mosd tidy
+go mosd: unknown command
+Run 'go help' for usage.
+root@hp:/go/cmd# go mod tidy
+go: finding module for package github.com/streadway/amqp
+go: downloading github.com/streadway/amqp v1.1.0
+go: found github.com/streadway/amqp in github.com/streadway/amqp v1.1.0
+root@hp:/go/cmd# nano consumer.go
+root@hp:/go/cmd# go run consumer.go 
+2025/03/01 12:34:47 dial tcp: lookup rabbitmq on 127.0.0.53:53: server misbehaving
+exit status 1
+root@hp:/go/cmd# nano consumer.go
+root@hp:/go/cmd# nano consumer.go
+root@hp:/go/cmd# go run consumer.go 
+^Csignal: interrupt
+root@hp:/go/cmd# go run consumer.go 
+[100 111 103 32 115 97 121 101 115 32 98 111 104]
+^Csignal: interrupt
+root@hp:/go/cmd# nano consumer.go
+root@hp:/go/cmd# nano consumer.go
+root@hp:/go/cmd# go run consumer.go 
+[100 111 103 32 115 97 121 101 115 32 98 111 104]
+[99 97 116 32 115 97 121 101 115 32 109 101 111 119]
+[100 111 103 32 115 97 121 101 115 32 98 111 104]
+[105 32 104 97 116 101 32 99 97 116]
+^Csignal: interrupt
+root@hp:/go/cmd# 
